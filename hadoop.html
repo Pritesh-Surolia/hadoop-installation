@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadoop Installation Guide</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1>Hadoop Installation on Ubuntu</h1>
+            <p class="author">Pritesh Surolia</p>
+        </div>
+    </header>
+    <div class="container">
+        <article>
+            <p>Welcome to your comprehensive guide for setting up Hadoop and embarking on your journey into the world of
+                Big Data! Below, you'll find a step-by-step guide that will help you install Hadoop on your system.
+                Let's dive right in! 🌊</p>
+            <!-- Your content goes here -->
+        </article>
+    </div>
+    <!-- Additional content and script tag can go here -->
+    <div class="container">
+        <article>
+            <h2>Step 1: Install Java Development Kit</h2>
+            <p>To start, you'll need to install the Java Development Kit (JDK) on your Ubuntu system. The default Ubuntu
+                repositories offer both Java 8 and Java 11, but it's recommended to use Java 8 for compatibility with
+                Hive. You can use the following command to install it:</p>
+            <div class="neu">
+                <pre><code>sudo apt update && sudo apt install openjdk-8-jdk</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+
+
+            <h2>Step 2: Verify Java Version</h2>
+            <p>Once the Java Development Kit is successfully installed, you should check the version to ensure it's
+                working correctly:</p>
+            <div class="neu">
+                <pre><code>java -version</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Output: </p>
+            <img src="images/img1.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+            <h2>Step 3: Install SSH</h2>
+            <p>SSH (Secure Shell) is crucial for Hadoop, as it facilitates secure communication between nodes in the
+                Hadoop cluster. This is essential for maintaining data integrity, and confidentiality, and enabling
+                efficient distributed data processing across the cluster:</p>
+            <div class="neu">
+                <pre><code>sudo apt install ssh</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+
+            <h2>Step 4: Create the Hadoop User</h2>
+            <p>You need to create a user specifically for running Hadoop components. This user will also be used to log
+                in to Hadoop's web interface. Run the following command to create the user and set a password:</p>
+            <div class="neu">
+                <pre><code>sudo adduser hadoop</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Output: </p>
+            <img src="images/img2.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+
+            <h2>Step 5: Switch User</h2>
+            <p>Switch to the newly created 'hadoop' user using the following command:</p>
+            <div class="neu">
+                <pre><code>su - hadoop</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+
+            <h2>Step 6: Configure SSH</h2>
+            <p>Next, you should set up password-less SSH access for the 'Hadoop' user to streamline the authentication
+                process. You'll generate an SSH keypair for this purpose. This avoids the need to enter a password or
+                passphrase each time you want to access the Hadoop system:</p>
+            <div class="neu">
+                <pre><code>ssh-keygen -t rsa</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Output: </p>
+            <img src="images/img3.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+            <h2>Step 7: Set Permissions</h2>
+            <p>Copy the generated public key to the authorized key file and set the proper permissions:</p>
+            <div class="neu">
+                <pre><code>cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys</code></pre>
+                <pre><code>chmod 640 ~/.ssh/authorized_keys</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+
+            <h2>Step 8: SSH to the localhost</h2>
+            <p>You will be asked to authenticate hosts by adding RSA keys to known hosts. Type 'yes' and hit Enter to
+                authenticate the localhost:</p>
+            <div class="neu">
+                <pre><code>ssh localhost</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Output: </p>
+            <img src="images/img4.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+
+            <h2>Step 9: Switch User</h2>
+            <p>Switch to the 'hadoop' user again using the following command:</p>
+            <div class="neu">
+                <pre><code>su - hadoop</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <h2>Step 10: Install Hadoop</h2>
+            <p>To begin, download Hadoop version 3.3.6 using the 'wget' command:</p>
+            <div class="neu">
+                <pre><code>wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+
+            <p>Once the download is complete, extract the contents of the downloaded file using the 'tar' command.
+                Optionally, you can rename the extracted folder to 'hadoop' for easier configuration:</p>
+            <div class="neu">
+                <pre><code>tar -xvzf hadoop-3.3.6.tar.gz</code></pre>
+                <pre><code>mv hadoop-3.3.6 hadoop</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+
+            <p>Next, you need to set up environment variables for Java and Hadoop in your system. Open the '~/.bashrc'
+                file in your preferred text editor. If you're using 'nano,' you can paste code with 'Ctrl+Shift+V,' save
+                with 'Ctrl+X,' 'Ctrl+Y,' and hit 'Enter':</p>
+            <div class="neu">
+                <pre><code>nano ~/.bashrc</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <div>
+                <p>Append the following lines to the file:</p>
+            </div>
+            <div class="neu">
+                <pre><code>export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export HADOOP_HOME=/home/hadoop/hadoop
+export HADOOP_INSTALL=$HADOOP_HOME
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export HADOOP_YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
+            </code></pre>
+            <button class="code-copy">Copy</button>
+            </div>
+            <p>Output: </p>
+            <img src="images/img5.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+
+            <p>Load the above configuration into the current environment:</p>
+            <div class="neu">
+                <pre><code>source ~/.bashrc</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+
+            <p>Additionally, you should configure the 'JAVA_HOME' in the 'hadoop-env.sh' file. Edit this file with a
+                text editor:</p>
+            <div class="neu">
+                <pre><code>nano $HADOOP_HOME/etc/hadoop/hadoop-env.sh</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Search for the “export JAVA_HOME” and configure it .</p>
+            <div class="neu">
+                <pre><code>JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Output: </p>
+            <img src="images/img6.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+            <h2>Step 11: Configuring Hadoop</h2>
+            <p>Create the namenode and datanode directories within the 'hadoop' user's home directory using the
+                following commands:</p>
+            <div class="neu">
+                <pre><code>cd hadoop/</code></pre>
+                <pre><code>mkdir -p ~/hadoopdata/hdfs/{namenode,datanode}</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+
+            <p>Next, edit the 'core-site.xml' file and replace the name with your system hostname:</p>
+            <div class="neu">
+                <pre><code>nano $HADOOP_HOME/etc/hadoop/core-site.xml</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p></p>
+            <div class="neu">
+                <pre><code>&lt;configuration&gt;
+&lt;property&gt;
+&lt;name&gt;fs.defaultFS&lt;/name&gt;
+&lt;value&gt;hdfs://localhost:9000&lt;/value&gt;
+&lt;/property&gt;
+&lt;/configuration&gt;</code></pre>
+<button class="code-copy">Copy</button>            
+</div>
+<p>Output: </p>
+            <img src="images/img7.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+            <p>Save and close the file. Then, edit the 'hdfs-site.xml' file:</p>
+            <p>Next, edit the 'hdfs-site.xml' file and replace the name with your system hostname:</p>
+            <div class="neu">
+                <pre><code>nano $HADOOP_HOME/etc/hadoop/hdfs-site.xml</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Change the NameNode and DataNode directory paths as shown below:</p>
+            <div class="neu">
+        <pre><code>&lt;configuration&gt;
+&lt;property&gt;
+&lt;name&gt;dfs.replication&lt;/name&gt;
+&lt;value&gt;1&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;
+&lt;value&gt;file:///home/hadoop/hadoopdata/hdfs/namenode&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;
+&lt;value&gt;file:///home/hadoop/hadoopdata/hdfs/datanode&lt;/value&gt;
+&lt;/property&gt;
+&lt;/configuration&gt;</code></pre>
+<button class="code-copy">Copy</button>            
+</div>
+<p>Output: </p>
+            <img src="images/img8.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+            <p>Save and close the file. Then, edit the 'mapred-site.xml' file:</p>
+            <div class="neu">
+                <pre><code>nano $HADOOP_HOME/etc/hadoop/mapred-site.xml</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Make the following changes:</p>
+            <div class="neu code-block">
+                <pre><code>&lt;configuration&gt;
+&lt;property&gt;
+&lt;name&gt;yarn.app.mapreduce.am.env&lt;/name&gt;
+&lt;value&gt;HADOOP_MAPRED_HOME=$HADOOP_HOME/home/hadoop/hadoop/bin/hadoop&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;mapreduce.map.env&lt;/name&gt;
+&lt;value&gt;HADOOP_MAPRED_HOME=$HADOOP_HOME/home/hadoop/hadoop/bin/hadoop&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+&lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;
+&lt;value&gt;file:///home/hadoop/hadoopdata/hdfs/datanode&lt;/value&gt;
+&lt;/property&gt;
+&lt;/configuration&gt;</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Output: </p>
+            <img src="images/img11.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+            <p>Finally, edit the 'yarn-site.xml' file:</p>
+            <div class="neu">
+                <pre><code>nano $HADOOP_HOME/etc/hadoop/yarn-site.xml</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Make the following changes:</p>
+            <div class="neu code-block">
+                <pre><code>&lt;configuration&gt;
+&lt;property&gt;
+&lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
+&lt;value&gt;mapreduce_shuffle&lt;/value&gt;
+&lt;/property&gt;
+&lt;/configuration&gt;</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Output: </p>
+            <img src="images/img12.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+            <h2>Step 12: Start Hadoop Cluster</h2>
+            <p>Before starting the Hadoop cluster, you need to format the Namenode as the 'hadoop' user. Format the
+                Hadoop Namenode with the following command:</p>
+            <div class="neu">
+                <pre><code>hdfs namenode -format</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Output: </p>
+            <img src="images/img9.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+
+            <p>Once the Namenode directory is successfully formatted with the HDFS file system, you will see the message
+                "Storage directory /home/hadoop/hadoopdata/hdfs/namenode has been successfully formatted." Start the
+                Hadoop cluster using:</p>
+            <div class="neu">
+                <pre><code>start-all.sh</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Output: </p>
+            <img src="images/img13.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+
+            <p>You can check the status of all Hadoop services using the command:</p>
+            <div class="neu">
+                <pre><code>jps</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+            <p>Output: </p>
+            <img src="images/img10.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+            <h2>Step 13: Access Hadoop Namenode and Resource Manager</h2>
+            <p>First, determine your IP address by running:</p>
+            <div class="neu">
+                <pre><code>ifconfig</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+
+            <p>If needed, install 'net-tools' using:</p>
+            <div class="neu">
+                <pre><code>sudo apt install net-tools</code></pre>
+                <button class="code-copy">Copy</button>
+            </div>
+
+            <p>To access the Namenode, open your web browser and visit <a href="http://your-server-ip:9870"
+                    target="_blank">http://your-server-ip:9870</a>. Replace 'your-server-ip' with your actual IP
+                address. You should see the Namenode web interface.</p>
+                <p>Output: </p>
+            <img src="images/img14.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+                <p>To access the Resource Manager, open your web browser and visit the URL http://your-server-ip:8088. You should see the following screen:</p>
+                <p>Output: </p>
+            <img src="images/img15.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+                <h2>Step 14: Verify the Hadoop Cluster</h2>
+                <p>The Hadoop cluster is installed and configured. Next, we will create some directories in the HDFS filesystem to test Hadoop. Create directories in the HDFS filesystem using the following command:</p>
+                <div class="neu">
+                    <pre><code>hdfs dfs -mkdir /test1</code></pre>
+                    <button class="code-copy">Copy</button>
+                </div>
+                <p></p>
+                <div class="neu">
+                    <pre><code>hdfs dfs -mkdir /logs</code></pre>
+                    <button class="code-copy">Copy</button>
+                </div>
+            
+                <p>Next, run the following command to list the above directory:</p>
+                <div class="neu">
+                    <pre><code>hdfs dfs -ls /</code></pre>
+                    <button class="code-copy">Copy</button>
+                </div>
+            
+                <p>You should get the following output:</p>
+            <img src="images/img16.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+                <p>Also, put some files into the Hadoop file system. For example, put log files from the host machine into the Hadoop file system:</p>
+                <div class="neu">
+                    <pre><code>hdfs dfs -put /var/log/* /logs/</code></pre>
+                    <button class="code-copy">Copy</button>
+                </div>
+            
+                <p>You can also verify the above files and directories in the Hadoop web interface. Go to the web interface, click on Utilities => Browse the file system. You should see the directories you created earlier on the following screen:</p>
+            <img src="images/img17.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+                <h2>Step 15: To Stop Hadoop Services</h2>
+                <p>To stop the Hadoop service, run the following command as a Hadoop user:</p>
+                <div class="neu">
+                    <pre><code>stop-all.sh</code></pre>
+                    <button class="code-copy">Copy</button>
+                </div>
+                <p>Output: </p>
+            <img src="images/img18.png" alt="Step 1 Screenshot" style="max-width: 100%; height: auto;" />
+            
+                <p>In summary, you've learned how to install Hadoop on Ubuntu. Now, you're ready to unlock the potential of big data analytics. Happy exploring!</p>
+            
+
+                <script src="scripts.js"></script>
+        </article>
+    </div>
+</body>
+
+</html>
